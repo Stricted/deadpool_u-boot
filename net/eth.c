@@ -186,6 +186,34 @@ static inline void eth_hw_addr_random(struct eth_device *dev)
 }
 #endif
 
+#ifdef CONFIG_ODROID_EFUSE_MAC
+#include <asm/arch/efuse.h>
+
+static int eth_get_efuse_mac(struct eth_device *dev)
+{
+	char buf[6 * 2];	// MAC address buffer
+	loff_t pos = 0x14;	// offset of the first byte for MAC address
+	int ret;
+
+	ret = efuse_read_usr(buf, sizeof(buf), &pos);
+	if (ret < 0) {
+		memset(buf, 0, sizeof(buf));
+		return -EINVAL;
+	}
+
+	int i;
+	char s[3];
+	char *p = buf;
+	for (i = 0; i < 6; i++) {
+		s[0] = *p++;
+		s[1] = *p++;
+		s[2] = 0;
+		dev->enetaddr[i] = simple_strtoul(s, NULL, 16);
+	}
+
+	return 0;
+}
+#else
 static int eth_get_efuse_mac(struct eth_device *dev)
 {
 #ifndef CONFIG_UNIFY_KEY_MANAGE
@@ -228,6 +256,8 @@ static int eth_get_efuse_mac(struct eth_device *dev)
 	return key_unify_uninit();
 #endif
 }
+#endif
+
 int eth_write_hwaddr(struct eth_device *dev, const char *base_name,
 		   int eth_number)
 {

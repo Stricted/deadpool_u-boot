@@ -590,6 +590,7 @@
 	#define CONFIG_GATEWAYIP       10.18.9.1           /* Our getway ip address */
 	#define CONFIG_SERVERIP        10.18.9.113         /* Tftp server ip address */
 	#define CONFIG_NETMASK         255.255.255.0
+    #define CONFIG_ODROID_EFUSE_MAC 1
 #endif /* (CONFIG_CMD_NET) */
 
 /* other devices */
