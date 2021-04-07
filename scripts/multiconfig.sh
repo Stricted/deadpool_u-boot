@@ -118,6 +118,19 @@ do_board_defconfig () {
 	defconfig_path=$srctree/configs/$1
 	tmp_defconfig_path=configs/.tmp_defconfig
 
+	# amlogic configs folder support
+	if [ ! -r $defconfig_path ]; then
+		defconfig_path=$srctree/board/amlogic/defconfigs/$1
+	fi
+	# amlogic customer configs support
+	if [ ! -r $defconfig_path ]; then
+		defconfig_path=$srctree/customer/board/defconfigs/$1
+	fi
+	# harman configs support
+	if [ ! -r $defconfig_path ]; then
+		defconfig_path=$srctree/board/harman/defconfigs/$1
+	fi
+
 	if [ ! -r $defconfig_path ]; then
 		echo >&2 "***"
 		echo >&2 "*** Can't find default configuration \"configs/$1\"!"
