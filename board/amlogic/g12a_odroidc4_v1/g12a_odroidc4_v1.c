@@ -67,14 +67,6 @@ DECLARE_GLOBAL_DATA_PTR;
 //new static eth setup
 struct eth_board_socket*  eth_board_skt;
 
-static void pcie_phy_shutdown(void)
-{
-	/*power down pcieA*/
-	writel(0x20000060, P_HHI_PCIE_PLL_CNTL5);
-	writel(0x20090496, P_HHI_PCIE_PLL_CNTL0);
-	writel(0x1d, P_EE_PCIE_A_CTRL);
-}
-
 int serial_set_pin_port(unsigned long port_base)
 {
     //UART in "Always On Module"
@@ -85,7 +77,8 @@ int serial_set_pin_port(unsigned long port_base)
 
 int dram_init(void)
 {
-	gd->ram_size = PHYS_SDRAM_1_SIZE;
+	//gd->ram_size = PHYS_SDRAM_1_SIZE;
+	gd->ram_size = (((readl(AO_SEC_GP_CFG0)) & 0xFFFF0000) << 4);
 	return 0;
 }
 
@@ -98,82 +91,6 @@ void secondary_boot_func(void)
 #ifdef  ETHERNET_INTERNAL_PHY
 void internalPhyConfig(struct phy_device *phydev)
 {
-}
-
-static int dwmac_meson_cfg_pll(void)
-{
-	writel(0x39C0040A, P_ETH_PLL_CTL0);
-	writel(0x927E0000, P_ETH_PLL_CTL1);
-	writel(0xAC5F49E5, P_ETH_PLL_CTL2);
-	writel(0x00000000, P_ETH_PLL_CTL3);
-	udelay(200);
-	writel(0x19C0040A, P_ETH_PLL_CTL0);
-	return 0;
-}
-
-static int dwmac_meson_cfg_analog(void)
-{
-	/*Analog*/
-	writel(0x20200000, P_ETH_PLL_CTL5);
-	writel(0x0000c002, P_ETH_PLL_CTL6);
-	writel(0x00000023, P_ETH_PLL_CTL7);
-
-	return 0;
-}
-
-static int dwmac_meson_cfg_ctrl(void)
-{
-	/*config phyid should between  a 0~0xffffffff*/
-	/*please don't use 44000181, this has been used by internal phy*/
-	writel(0x33000180, P_ETH_PHY_CNTL0);
-
-	/*use_phy_smi | use_phy_ip | co_clkin from eth_phy_top*/
-	writel(0x260, P_ETH_PHY_CNTL2);
-
-	writel(0x74043, P_ETH_PHY_CNTL1);
-	writel(0x34043, P_ETH_PHY_CNTL1);
-	writel(0x74043, P_ETH_PHY_CNTL1);
-	return 0;
-}
-
-static void setup_net_chip(void)
-{
-	eth_aml_reg0_t eth_reg0;
-
-	eth_reg0.d32 = 0;
-	eth_reg0.b.phy_intf_sel = 4;
-	eth_reg0.b.rx_clk_rmii_invert = 0;
-	eth_reg0.b.rgmii_tx_clk_src = 0;
-	eth_reg0.b.rgmii_tx_clk_phase = 0;
-	eth_reg0.b.rgmii_tx_clk_ratio = 4;
-	eth_reg0.b.phy_ref_clk_enable = 1;
-	eth_reg0.b.clk_rmii_i_invert = 1;
-	eth_reg0.b.clk_en = 1;
-	eth_reg0.b.adj_enable = 1;
-	eth_reg0.b.adj_setup = 0;
-	eth_reg0.b.adj_delay = 9;
-	eth_reg0.b.adj_skew = 0;
-	eth_reg0.b.cali_start = 0;
-	eth_reg0.b.cali_rise = 0;
-	eth_reg0.b.cali_sel = 0;
-	eth_reg0.b.rgmii_rx_reuse = 0;
-	eth_reg0.b.eth_urgent = 0;
-	setbits_le32(P_PREG_ETH_REG0, eth_reg0.d32);// rmii mode
-
-	dwmac_meson_cfg_pll();
-	dwmac_meson_cfg_analog();
-	dwmac_meson_cfg_ctrl();
-
-	/* eth core clock */
-	setbits_le32(HHI_GCLK_MPEG1, (0x1 << 3));
-	/* eth phy clock */
-	setbits_le32(HHI_GCLK_MPEG0, (0x1 << 4));
-
-	/* eth phy pll, clk50m */
-	setbits_le32(HHI_FIX_PLL_CNTL3, (0x1 << 5));
-
-	/* power on memory */
-	clrbits_le32(HHI_MEM_PD_REG0, (1 << 3) | (1<<2));
 }
 #endif
 
@@ -228,9 +145,6 @@ int board_eth_init(bd_t *bis)
 #ifdef ETHERNET_EXTERNAL_PHY
 	dwmac_meson_cfg_drive_strength();
 	setup_net_chip_ext();
-#endif
-#ifdef ETHERNET_INTERNAL_PHY
-	setup_net_chip();
 #endif
 	udelay(1000);
 	designware_initialize(ETH_BASE, PHY_INTERFACE_MODE_RMII);
@@ -749,9 +663,6 @@ int board_late_init(void)
 		aml_try_factory_usb_burning(1, gd->bd);
 		aml_try_factory_sdcard_burning(0, gd->bd);
 #endif// #ifdef CONFIG_AML_V2_FACTORY_BURN
-
-	/* close pcie phy */
-	pcie_phy_shutdown();
 
     if (MESON_CPU_MAJOR_ID_SM1 == get_cpu_id().family_id) {
 		setenv("board_defined_bootup", "bootup_Y3");

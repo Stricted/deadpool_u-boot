@@ -19,8 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef __G12A_DEADPOOL_V1_H__
-#define __G12A_DEADPOOL_V1_H__
+#ifndef __G12A_ODROIDC4_V1_H__
+#define __G12A_ODROIDC4_V1_H__
 
 #include <asm/arch/cpu.h>
 
@@ -34,8 +34,8 @@
  */
 #define CONFIG_PLATFORM_POWER_INIT
 #define CONFIG_VCCK_INIT_VOLTAGE	800		// VCCK power up voltage
-#define CONFIG_VDDEE_INIT_VOLTAGE	840		// VDDEE power up voltage
-#define CONFIG_VDDEE_SLEEP_VOLTAGE	770		// VDDEE suspend voltage
+#define CONFIG_VDDEE_INIT_VOLTAGE	860		// VDDEE power up voltage
+#define CONFIG_VDDEE_SLEEP_VOLTAGE	731		// VDDEE suspend voltage
 
 /* configs for CEC */
 #define CONFIG_CEC_OSD_NAME		"AML_TV"
@@ -54,6 +54,7 @@
 #define CONFIG_BOOTLOADER_CONTROL_BLOCK
 
 #define CONFIG_CMD_BOOTCTOL_AVB
+#define CONFIG_AVB2_KPUB_VENDOR 1
 
 /* support ext4*/
 #define CONFIG_CMD_EXT4 1
@@ -143,6 +144,7 @@
 		"get_bootloaderversion;" \
 		"setenv bootargs ${initargs}  hdr_priority=${hdr_priority} otg_device=${otg_device} reboot_mode_android=${reboot_mode_android} logo=${display_layer},loaded,${fb_addr} fb_width=${fb_width} fb_height=${fb_height} display_bpp=${display_bpp} outputmode=${outputmode} vout=${outputmode},enable panel_type=${panel_type} lcd_ctrl=${lcd_ctrl} hdmitx=${cecconfig},${colorattribute} hdmimode=${hdmimode} hdmichecksum=${hdmichecksum} dolby_vision_on=${dolby_vision_on} frac_rate_policy=${frac_rate_policy} hdmi_read_edid=${hdmi_read_edid} cvbsmode=${cvbsmode} osd_reverse=${osd_reverse} video_reverse=${video_reverse} irq_check_en=${Irq_check_en}  androidboot.selinux=${EnableSelinux} androidboot.firstboot=${firstboot} jtag=${jtag}; "\
 	"setenv bootargs ${bootargs} androidboot.hardware=amlogic androidboot.bootloader=${bootloader_version} androidboot.build.expect.baseband=N/A;"\
+	"setenv bootargs ${bootargs} mac=${ethaddr} androidboot.mac=${ethaddr};"\
             "run cmdline_keys;"\
             "\0"\
         "switch_bootmode="\
@@ -694,7 +696,7 @@
 
 /* Choose One of Ethernet Type */
 #undef CONFIG_ETHERNET_NONE
-#define ETHERNET_INTERNAL_PHY
+#undef ETHERNET_INTERNAL_PHY
 #undef ETHERNET_EXTERNAL_PHY
 
 #define CONFIG_HIGH_TEMP_COOL 90
