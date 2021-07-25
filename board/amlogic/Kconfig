@@ -216,6 +216,10 @@ config G12A_ODROIDC4_V1
 	bool "Support amlogic g12a odroidc4 v1 board"
 	default n
 
+config G12A_RADXA0_V1
+	bool "Support amlogic g12a radxa0 v1 board"
+	default n
+
 config SM1_ELEKTRA_V1
 	bool "Support amlogic sm1 elektra v1 board"
 	default n
@@ -525,6 +529,10 @@ endif
 
 if G12A_ODROIDC4_V1
 source "board/amlogic/g12a_odroidc4_v1/Kconfig"
+endif
+
+if G12A_RADXA0_V1
+source "board/amlogic/g12a_radxa0_v1/Kconfig"
 endif
 
 if SM1_ELEKTRA_V1
