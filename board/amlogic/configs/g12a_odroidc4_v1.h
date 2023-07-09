@@ -344,9 +344,9 @@
             "run storeargs;"\
             "run recovery_key;" \
             "bcb uboot-command;"\
-            "run switch_bootmode;"
+            "run recovery_from_flash;"
 
-#define CONFIG_BOOTCOMMAND "run storeboot"
+#define CONFIG_BOOTCOMMAND "run recovery_from_flash"
 
 //#define CONFIG_ENV_IS_NOWHERE  1
 #define CONFIG_ENV_SIZE   (64*1024)
