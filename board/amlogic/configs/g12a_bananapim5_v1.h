@@ -344,6 +344,8 @@
             "run storeargs;"\
             "run recovery_key;" \
             "bcb uboot-command;"\
+            "gpio set GPIOH_4;" \
+            "gpio set GPIOH_6;" \
             "run switch_bootmode;"
 
 #define CONFIG_BOOTCOMMAND "run storeboot"
