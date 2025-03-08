@@ -726,6 +726,9 @@ int checkhw(char * name)
 	if (MESON_CPU_MAJOR_ID_SM1 == cpu_id.family_id) {
 		printf("use sm1\n");
 		switch (ddr_size) {
+			case 0xE0000000:
+				strcpy(loc_name, "sm1_ac213_4g\0");
+				break;
 			case 0x80000000:
 				if (!strcmp(ddr_mode, "1g")) {
 					strcpy(loc_name, "sm1_ac213_1g\0");
@@ -747,6 +750,9 @@ int checkhw(char * name)
 	else {
 		printf("use g12a\n");
 		switch (ddr_size) {
+			case 0xE0000000:
+				strcpy(loc_name, "g12a_u212_4g\0");
+				break;
 			case 0x80000000:
 				if (!strcmp(ddr_mode, "1g")) {
 					strcpy(loc_name, "g12a_u212_1g\0");
