@@ -216,6 +216,10 @@ config G12A_DEADPOOL_V1
 	bool "Support amlogic g12a deadpool v1 board"
 	default n
 
+config G12A_KM9PRO_V1
+	bool "Support amlogic g12a km9pro v1 board"
+	default n
+
 config G12A_ODROIDC4_V1
 	bool "Support amlogic g12a odroidc4 v1 board"
 	default n
@@ -533,6 +537,10 @@ endif
 
 if G12A_DEADPOOL_V1
 source "board/amlogic/g12a_deadpool_v1/Kconfig"
+endif
+
+if G12A_KM9PRO_V1
+source "board/amlogic/g12a_km9pro_v1/Kconfig"
 endif
 
 if G12A_ODROIDC4_V1
