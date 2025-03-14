@@ -608,6 +608,13 @@ int board_init(void)
 	board_usb_init(&g_usb_config_GXL_skt,BOARD_USB_MODE_HOST);
 #endif /*CONFIG_USB_XHCI_AMLOGIC*/
 
+	/*GPIOH_5 power-led blue on*/
+	unsigned int val;
+	val = readl(PREG_PAD_GPIO3_EN_N);
+	val &= ~(1<<5);
+	writel(val, PREG_PAD_GPIO3_EN_N);
+	printf("gpio: GPIOH_5 power-led on\n");
+
 #if 0
 	aml_pwm_cal_init(0);
 #endif//

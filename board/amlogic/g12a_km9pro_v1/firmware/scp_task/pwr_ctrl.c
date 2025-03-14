@@ -63,6 +63,10 @@ static void set_vddee_voltage(unsigned int target_voltage)
 
 static void power_off_at_24M(unsigned int suspend_from)
 {
+	/*set gpioH_5 low to power off (blue led)*/
+	writel(readl(PREG_PAD_GPIO3_O) & (~(1 << 5)), PREG_PAD_GPIO3_O);
+	writel(readl(PREG_PAD_GPIO3_EN_N) & (~(1 << 5)), PREG_PAD_GPIO3_EN_N);
+
 	/*set gpioH_8 high to power off vcc 5v*/
 	writel(readl(PREG_PAD_GPIO3_EN_N) | (1 << 8), PREG_PAD_GPIO3_EN_N);
 	writel(readl(PERIPHS_PIN_MUX_C) & (~(0xf)), PERIPHS_PIN_MUX_C);
@@ -91,6 +95,11 @@ static void power_on_at_24M(unsigned int suspend_from)
 	writel(readl(PREG_PAD_GPIO3_EN_N) & (~(1 << 8)), PREG_PAD_GPIO3_EN_N);
 	writel(readl(PERIPHS_PIN_MUX_C) & (~(0xf)), PERIPHS_PIN_MUX_C);
 	_udelay(10000);
+
+	/*set gpioH_5 high to power on (blue led)*/
+	writel(readl(PREG_PAD_GPIO3_O) | (1 << 5), PREG_PAD_GPIO3_O);
+	writel(readl(PREG_PAD_GPIO3_EN_N) & (~(1 << 5)), PREG_PAD_GPIO3_EN_N);
+	_udelay(100);
 }
 
 void get_wakeup_source(void *response, unsigned int suspend_from)
