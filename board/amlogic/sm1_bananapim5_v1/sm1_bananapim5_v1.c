@@ -722,7 +722,7 @@ int checkhw(char * name)
 	ddr_size += CONFIG_SYS_MEM_TOP_HIDE;
 #endif
 	printf("ddr_size = 0x%x \n", ddr_size);
-	char *ddr_mode = getenv("mem_size");
+
 	if (MESON_CPU_MAJOR_ID_SM1 == cpu_id.family_id) {
 		printf("use sm1\n");
 		switch (ddr_size) {
@@ -730,17 +730,7 @@ int checkhw(char * name)
 				strcpy(loc_name, "sm1_ac213_4g\0");
 				break;
 			case 0x80000000:
-				if (!strcmp(ddr_mode, "1g")) {
-					strcpy(loc_name, "sm1_ac213_1g\0");
-					break;
-				}
 				strcpy(loc_name, "sm1_ac213_2g\0");
-				break;
-			case 0x40000000:
-				strcpy(loc_name, "sm1_ac213_1g\0");
-				break;
-			case 0x2000000:
-				strcpy(loc_name, "sm1_ac213_512m\0");
 				break;
 			default:
 				strcpy(loc_name, "sm1_ac213_unsupport");
@@ -754,17 +744,7 @@ int checkhw(char * name)
 				strcpy(loc_name, "g12a_u212_4g\0");
 				break;
 			case 0x80000000:
-				if (!strcmp(ddr_mode, "1g")) {
-					strcpy(loc_name, "g12a_u212_1g\0");
-					break;
-				}
-				strcpy(loc_name, "g12a_s905y2_deadpool\0");
-				break;
-			case 0x40000000:
-				strcpy(loc_name, "g12a_u212_1g\0");
-				break;
-			case 0x2000000:
-				strcpy(loc_name, "g12a_u212_512m\0");
+				strcpy(loc_name, "g12a_u212_2g\0");
 				break;
 			default:
 				strcpy(loc_name, "g12a_u212_unsupport");
