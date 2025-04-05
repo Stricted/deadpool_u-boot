@@ -338,8 +338,6 @@
 #define CONFIG_PREBOOT  \
             "run bcb_cmd; "\
             "run factory_reset_poweroff_protect;"\
-            "gpio set GPIOH_4;" \
-            "gpio set GPIOH_6;" \
             "run upgrade_check;"\
             "run init_display;"\
             "run storeargs;"\
