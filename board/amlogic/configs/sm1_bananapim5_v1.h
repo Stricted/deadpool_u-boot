@@ -19,8 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef __G12A_BANANAPIM5_V1_H__
-#define __G12A_BANANAPIM5_V1_H__
+#ifndef __SM1_BANANAPIM5_V1_H__
+#define __SM1_BANANAPIM5_V1_H__
 
 #include <asm/arch/cpu.h>
 
@@ -34,11 +34,11 @@
  */
 #define CONFIG_PLATFORM_POWER_INIT
 #define CONFIG_VCCK_INIT_VOLTAGE	800		// VCCK power up voltage
-#define CONFIG_VDDEE_INIT_VOLTAGE	860		// VDDEE power up voltage
-#define CONFIG_VDDEE_SLEEP_VOLTAGE	731		// VDDEE suspend voltage
+#define CONFIG_VDDEE_INIT_VOLTAGE	850		// VDDEE power up voltage
+#define CONFIG_VDDEE_SLEEP_VOLTAGE	770		// VDDEE suspend voltage
 
 /* configs for CEC */
-#define CONFIG_CEC_OSD_NAME		"AML_TV"
+#define CONFIG_CEC_OSD_NAME		"AML_MBOX"
 #define CONFIG_CEC_WAKEUP
 /*if use bt-wakeup,open it*/
 #define CONFIG_BT_WAKEUP
@@ -130,7 +130,6 @@
         "reboot_mode_android=""normal""\0"\
         "Irq_check_en=0\0"\
         "fs_type=""rootfstype=ramfs""\0"\
-        "aml_dt=sm1_s905y3_bananapim5\0"\
         "initargs="\
             "init=/init console=null earlyprintk=aml-uart,0xff803000 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "\
             "\0"\
@@ -339,8 +338,6 @@
 #define CONFIG_PREBOOT  \
             "run bcb_cmd; "\
             "run factory_reset_poweroff_protect;"\
-            "gpio set GPIOH_4;" \
-            "gpio set GPIOH_6;" \
             "run upgrade_check;"\
             "run init_display;"\
             "run storeargs;"\
@@ -541,6 +538,8 @@
 	#define CONFIG_USB_STORAGE      1
 	#define CONFIG_USB_XHCI		1
 	#define CONFIG_USB_XHCI_AMLOGIC_V2 1
+	#define CONFIG_USB_GPIO_RST			GPIOEE(GPIOH_4)
+	#define CONFIG_USB_GPIO_RST_NAME		"GPIOH_4"
 	#define CONFIG_USB_GPIO_PWR  			GPIOEE(GPIOH_6)
 	#define CONFIG_USB_GPIO_PWR_NAME		"GPIOH_6"
 	//#define CONFIG_USB_XHCI_AMLOGIC_USB3_V2		1
@@ -700,7 +699,7 @@
 /* Choose One of Ethernet Type */
 #undef CONFIG_ETHERNET_NONE
 #undef ETHERNET_INTERNAL_PHY
-#undef ETHERNET_EXTERNAL_PHY
+#define ETHERNET_EXTERNAL_PHY
 
 #define CONFIG_HIGH_TEMP_COOL 90
 #endif

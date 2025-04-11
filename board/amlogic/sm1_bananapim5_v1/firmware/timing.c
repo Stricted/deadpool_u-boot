@@ -65,7 +65,7 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.version				= 1,
 	.dram_rank_config		= CONFIG_DDR0_32BIT_RANK0_CH0,
 	.DramType				= CONFIG_DDR_TYPE_DDR4,
-	.DRAMFreq				= {1320, 0, 0, 0},
+	.DRAMFreq				= {1200, 0, 0, 0},
 	.ddr_rfc_type			= DDR_RFC_TYPE_DDR4_2Gbx8,
 	.ddr_base_addr			= CFG_DDR_BASE_ADDR,
 	.ddr_start_offset		= CFG_DDR_START_OFFSET,
@@ -128,7 +128,6 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.pll_ssc_mode			= (1<<20) | (1<<8) | (2<<4) | 0,//center_ssc_1000ppm
 	.ddr_func				= DDR_FUNC,
 	.magic					= DRAM_CFG_MAGIC,
-	.fast_boot[0]			= 1,
 },
 {
 	/* g12a skt (u209) ddr3 */
@@ -229,8 +228,8 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.DisabledDbyte			= 0xf0,
 	.Is2Ttiming				= 0,
 	.HdtCtrl				= 0xa,
-	.dram_cs0_size_MB		= 0xffff,//1024,
-	.dram_cs1_size_MB		= 0xffff,//1024,
+	.dram_cs0_size_MB		= 0x800,//2048,
+	.dram_cs1_size_MB		= 0x800,//2048,
 	.training_SequenceCtrl	= {0x131f,0x61}, //ddr3 0x21f 0x31f
 	.phy_odt_config_rank	= {0x23,0x13}, //use 0x23 0x13  compatibility with 1rank and 2rank //targeting rank 0. [3:0] is used //for write ODT [7:4] is used for //read ODT
 	.dfi_odt_config			= 0x0d0d,  //use 0d0d compatibility with 1rank and 2rank  //0808
@@ -242,9 +241,9 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.soc_data_drv_ohm_p		= 40,
 	.soc_data_drv_ohm_n		= 40,
 	.soc_data_odt_ohm_p		= 0,
-	.soc_data_odt_ohm_n		= 120,
+	.soc_data_odt_ohm_n		= 48,
 	.dram_data_drv_ohm		= 40, //lpddr4 sdram only240/1-6
-	.dram_data_odt_ohm		= 120,
+	.dram_data_odt_ohm		= 48,
 	.dram_ac_odt_ohm		= 120,
 	.lpddr4_dram_vout_voltage_1_3_2_5_setting = 1,///1, 1/3vddq     0 2/5 vddq
 	.soc_clk_slew_rate		= 0x3ff,//0x253,
@@ -256,7 +255,6 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.vref_dram_permil		= 0,
 	//.vref_reverse			= 0,
 	.ac_trace_delay			= {00,0x0,0,0,0,0,0x0,00},
-	//.ac_trace_delay		= {32,32,32,32,32,32,32,32,32,32},
 	.ac_pinmux				= {00,00},
 	.ddr_dmc_remap			= {
 							[0] = ( 5 |  6 << 5 |  7 << 10 |  8<< 15 | 9<< 20 | 10 << 25 ),
@@ -266,7 +264,7 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 							[4] = ( 30| 12 << 5 | 13 << 10 |  14<< 15 |  0 << 20 |  0 << 25 ),
 	},
 	.ddr_lpddr34_ca_remap	= {00,00},
-	.ddr_lpddr34_dq_remap	= {3,2,0,1,7,6,5,4, 10,9,14,11,8,12,13,15, 20,21,23,22,18,17,19,16, 28,26,25,24,31,30,27,29},
+	.ddr_lpddr34_dq_remap	= {3,0,2,1,7,6,5,4, 13,12,15,14,10,8,11,9, 19,21,22,20,16,18,17,23, 26,27,25,24,31,29,30,28},
 	.dram_rtt_nom_wr_park	= {00,00},
 
 	/* pll ssc config:
@@ -285,7 +283,6 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.ddr_func				= DDR_FUNC,
 	.magic					= DRAM_CFG_MAGIC,
 	.diagnose				= CONFIG_DIAGNOSE_DISABLE,
-	.fast_boot[0]			= 1,
 },
 {
 	/* g12a Y2 dongle */
@@ -340,7 +337,7 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 							[4] = ( 30| 12 << 5 | 13 << 10 |  14<< 15 |  0 << 20 |  0 << 25 ),
 	},
 	.ddr_lpddr34_ca_remap	= {00,00},
-	.ddr_lpddr34_dq_remap	= {3,2,0,1,7,6,5,4, 10,9,14,11,8,12,13,15, 20,21,23,22,18,17,19,16, 28,26,25,24,31,30,27,29},
+	.ddr_lpddr34_dq_remap	= {3,0,2,1,7,6,5,4, 13,12,15,14,10,8,11,9, 19,21,22,20,16,18,17,23, 26,27,25,24,31,29,30,28},
 	.dram_rtt_nom_wr_park	= {00,00},
 	/* pll ssc config:
 	 *
@@ -357,7 +354,6 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.pll_ssc_mode			= (1<<20) | (1<<8) | (2<<4) | 0,//center_ssc_1000ppm
 	.ddr_func				= DDR_FUNC,
 	.magic					= DRAM_CFG_MAGIC,
-	.fast_boot[0]			= 1,
 },
 #if 0
 {
@@ -419,7 +415,6 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.ddr_func				= DDR_FUNC,
 	.magic					= DRAM_CFG_MAGIC,
 	.diagnose				= CONFIG_DIAGNOSE_DISABLE,
-	.fast_boot[0]			= 1,
 },
 #endif
 };
@@ -573,12 +568,12 @@ bl2_reg_t __bl2_reg[] = {
 	{AO_PIN_MUX_REG1,     (3 << 16),               (0xF << 16),  0, BL2_INIT_STAGE_PWM_INIT | PWM_CFG1,  0},
 	/* VDDEE init done */
 	/* Enable 5V_EN */
-	{GPIO_O_EN_N_REG3,    (1 << 8),                (1 << 8),     0, BL2_INIT_STAGE_1, 0},
+	{GPIO_O_EN_N_REG3,    (0 << 8),                (1 << 8),     0, BL2_INIT_STAGE_1, 0},
 	{GPIO_O_REG3,         (1 << 8),                0xffffffff,   0, BL2_INIT_STAGE_1, 0},
 	/* Enable VCCK */
 	{AO_SEC_REG0,         (1 << 0),                0xffffffff,   0, BL2_INIT_STAGE_1, 0},
 	{AO_GPIO_O,           (1 << 31),               0xffffffff,   0, BL2_INIT_STAGE_1, 0},
 	/* Init sys led*/
 	{AO_GPIO_O_EN_N,      (0 << 11),               (1 << 11),    0, BL2_INIT_STAGE_1, 0},
-	{AO_GPIO_O,           (1 << 11),               (1 << 11),    0, BL2_INIT_STAGE_1, 0},
+	{AO_GPIO_O,           (0 << 11),               (1 << 11),    0, BL2_INIT_STAGE_1, 0},
 };
