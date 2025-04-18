@@ -359,7 +359,7 @@ static void gpio_set_vbus_power(char is_power_on)
 
 	if (is_power_on) {
 		gpio_direction_output(CONFIG_USB_GPIO_PWR, 1);
-		udelay(10);
+		udelay(1000);
 		gpio_direction_output(CONFIG_USB_GPIO_RST, 1);
 	} else {
 		gpio_direction_output(CONFIG_USB_GPIO_RST, 0);
