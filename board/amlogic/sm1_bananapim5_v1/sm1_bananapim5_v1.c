@@ -329,45 +329,22 @@ int board_early_init_f(void){
 #define CONFIG_GXL_USB_U3_PORT_NUM	0
 #endif
 
-static int gpio_set_not_used(void)
-{
-	gpio_free(CONFIG_USB_GPIO_PWR);
-	gpio_free(CONFIG_USB_GPIO_RST);
-	return 0;
-}
-
 static void gpio_set_vbus_power(char is_power_on)
 {
 	int ret;
-
-	ret = gpio_request(CONFIG_USB_GPIO_RST,
-		CONFIG_USB_GPIO_RST_NAME);
-	if (ret && ret != -EBUSY) {
-		printf("gpio: requesting pin %u failed\n",
-			CONFIG_USB_GPIO_RST);
-		return;
-	}
 
 	ret = gpio_request(CONFIG_USB_GPIO_PWR,
 		CONFIG_USB_GPIO_PWR_NAME);
 	if (ret && ret != -EBUSY) {
 		printf("gpio: requesting pin %u failed\n",
 			CONFIG_USB_GPIO_PWR);
-		gpio_free(CONFIG_USB_GPIO_RST);
 		return;
 	}
 
 	if (is_power_on) {
 		gpio_direction_output(CONFIG_USB_GPIO_PWR, 1);
-		udelay(1000);
-		gpio_direction_output(CONFIG_USB_GPIO_RST, 1);
 	} else {
-		gpio_direction_output(CONFIG_USB_GPIO_RST, 0);
 		gpio_direction_output(CONFIG_USB_GPIO_PWR, 0);
-	}
-
-	if (!is_power_on) {
-		gpio_set_not_used();
 	}
 }
 
