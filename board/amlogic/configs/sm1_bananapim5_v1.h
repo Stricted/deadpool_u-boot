@@ -120,7 +120,7 @@
         "wipe_cache=successful\0"\
         "EnableSelinux=enforcing\0" \
         "recovery_part=recovery\0"\
-        "lock=10101000\0"\
+        "lock=10100000\0"\
         "recovery_offset=0\0"\
         "cvbs_drv=0\0"\
         "osd_reverse=0\0"\
@@ -131,7 +131,7 @@
         "Irq_check_en=0\0"\
         "fs_type=""rootfstype=ramfs""\0"\
         "initargs="\
-            "init=/init console=ttyS0,115200 no_console_suspend earlyprintk=aml-uart,0xff803000 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "\
+            "init=/init console=null earlyprintk=aml-uart,0xff803000 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "\
             "\0"\
         "upgrade_check="\
             "echo upgrade_step=${upgrade_step}; "\
@@ -293,8 +293,8 @@
                     "setenv bootargs ${bootargs} androidboot.serialno=${usid};"\
                     "setenv serial ${usid};"\
                 "else "\
-                    "setenv bootargs ${bootargs} androidboot.serialno=1234567890;"\
-                    "setenv serial 1234567890;"\
+                    "setenv bootargs ${bootargs} androidboot.serialno=1234567892;"\
+                    "setenv serial 1234567892;"\
                 "fi;"\
                 "if keyman read mac ${loadaddr} str; then "\
                     "setenv bootargs ${bootargs} mac=${mac} androidboot.mac=${mac};"\
@@ -305,7 +305,7 @@
                 "if keyman read oemkey ${loadaddr} str; then "\
                     "setenv bootargs ${bootargs} androidboot.oem.key1=${oemkey};"\
                 "else "\
-                    "setenv bootargs ${bootargs} androidboot.oem.key1=ATV00104319;"\
+                    "setenv bootargs ${bootargs} androidboot.oem.key1=ATV00100020;"\
                 "fi;"\
             "fi;"\
             "\0"\
@@ -316,6 +316,11 @@
         "upgrade_key="\
             "if gpio input GPIOAO_3; then "\
                 "echo detect upgrade key; run update;"\
+            "fi;"\
+            "\0"\
+        "recovery_key="\
+            "if gpio input GPIOAO_3; then "\
+                "echo detect recovery key; run recovery_from_flash;"\
             "fi;"\
             "\0"\
 	"irremote_update="\
@@ -335,7 +340,7 @@
             "run upgrade_check;"\
             "run init_display;"\
             "run storeargs;"\
-            "run upgrade_key;" \
+            "run recovery_key;" \
             "bcb uboot-command;"\
             "run switch_bootmode;"
 
@@ -561,7 +566,7 @@
 #define CONFIG_USBDOWNLOAD_GADGET 1
 #define CONFIG_SYS_CACHELINE_SIZE 64
 #define CONFIG_FASTBOOT_MAX_DOWN_SIZE	0x8000000
-#define CONFIG_DEVICE_PRODUCT	"franklin"
+#define CONFIG_DEVICE_PRODUCT	"m5"
 
 //UBOOT Facotry usb/sdcard burning config
 #define CONFIG_AML_V2_FACTORY_BURN              1       //support facotry usb burning
