@@ -1,8 +1,8 @@
 
 /*
- * board/amlogic/g12b_w411_v1/firmware/timing.c
+ * board/amlogic/txl_skt_v1/firmware/timing.c
  *
- * Copyright (C) 2018 Amlogic, Inc. All rights reserved.
+ * Copyright (C) 2015 Amlogic, Inc. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,165 +60,12 @@
 
 ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 {
-	/* ddr4 */
-	.board_id				= 0,//CONFIG_BOARD_ID_MASK,
-	.version				= 1,
-	.dram_rank_config		= CONFIG_DDR0_32BIT_RANK0_CH0,
-	.DramType				= CONFIG_DDR_TYPE_DDR4,
-	.DRAMFreq				= {1200, 0, 0, 0},
-	.ddr_rfc_type			= DDR_RFC_TYPE_DDR4_2Gbx8,
-	.ddr_base_addr			= CFG_DDR_BASE_ADDR,
-	.ddr_start_offset		= CFG_DDR_START_OFFSET,
-	//.imem_load_addr			= 0xFFFC0000, //sram
-	//.dmem_load_size			= 0x1000, //4K
-
-	.DisabledDbyte			= 0xf0,
-	.Is2Ttiming				= 1,
-	.HdtCtrl				= 0xC8,
-	.dram_cs0_size_MB		= 0xffff,
-	.dram_cs1_size_MB		= 0,
-	.training_SequenceCtrl	= {0x31f,0x61}, //ddr3 0x21f 0x31f
-	.phy_odt_config_rank	= {0x23,0x13}, //use 0x23 0x13  compatibility with 1rank and 2rank //targeting rank 0. [3:0] is used //for write ODT [7:4] is used for //read ODT
-	.dfi_odt_config			= 0x0d0d,  //use 0d0d compatibility with 1rank and 2rank  //0808
-	.PllBypassEn			= 0, //bit0-ps0,bit1-ps1
-	.ddr_rdbi_wr_enable		= 0,
-	.clk_drv_ohm			= 40,
-	.cs_drv_ohm				= 40,
-	.ac_drv_ohm				= 40,
-	.soc_data_drv_ohm_p		= 40,
-	.soc_data_drv_ohm_n		= 40,
-	.soc_data_odt_ohm_p		= 60,
-	.soc_data_odt_ohm_n		= 0,
-	.dram_data_drv_ohm		= 34,//48, //34, //ddr4 sdram only 34 or 48, skt board use 34 better
-	.dram_data_odt_ohm		= 60, //60,
-	.dram_ac_odt_ohm		= 0,
-	.soc_clk_slew_rate		= 0x3ff,
-	.soc_cs_slew_rate		= 0x3ff,
-	.soc_ac_slew_rate		= 0x3ff,
-	.soc_data_slew_rate		= 0x2ff,
-	.vref_output_permil		= 500,
-	.vref_receiver_permil	= 0,//700,
-	.vref_dram_permil		= 0,//700,
-	//.vref_reverse			= 0,
-	//.ac_trace_delay		= {0x0,0x0},// {0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40,0x40},
-	.ac_trace_delay			= {32,32,32,32,32,32,32,32,32,32},
-	.ddr_dmc_remap			= {
-							[0] = ( 5 |  7 << 5 |  8 << 10 |  9 << 15 | 10 << 20 | 11 << 25 ),
-							[1] = ( 12|  0 << 5 |  0 << 10 | 14 << 15 | 15 << 20 | 16 << 25 ),
-							[2] = ( 17| 18 << 5 | 19 << 10 | 21 << 15 | 22 << 20 | 23 << 25 ),
-							[3] = ( 24| 25 << 5 | 26 << 10 | 27 << 15 | 28 << 20 | 29 << 25 ),
-							[4] = ( 30| 13 << 5 | 20 << 10 |  6 << 15 |  0 << 20 |  0 << 25 ),
-	},
-	.ddr_lpddr34_ca_remap	= {00,00},
-	.ddr_lpddr34_dq_remap	= {00,00},
-	.dram_rtt_nom_wr_park	= {00,00},
-
-	/* pll ssc config:
-	 *
-	 *   pll_ssc_mode = (1<<20) | (1<<8) | ([strength] << 4) | [mode],
-	 *      ppm = strength * 500
-	 *      mode: 0=center, 1=up, 2=down
-	 *
-	 *   eg:
-	 *     1. config 1000ppm center ss. then mode=0, strength=2
-	 *        .pll_ssc_mode = (1<<20) | (1<<8) | (2 << 4) | 0,
-	 *     2. config 3000ppm down ss. then mode=2, strength=6
-	 *        .pll_ssc_mode = (1<<20) | (1<<8) | (6 << 4) | 2,
-	 */
-	.pll_ssc_mode			= (1<<20) | (1<<8) | (2<<4) | 0,//center_ssc_1000ppm
-	.ddr_func				= DDR_FUNC,
-	.magic					= DRAM_CFG_MAGIC,
-	.fast_boot[0]			= 1,
-},
-{
-	/* ddr3 */
-	.board_id				= CONFIG_BOARD_ID_MASK,
-	.version				= 1,
-	.dram_rank_config		= CONFIG_DDR0_32BIT_RANK0_CH0,
-	.DramType				= CONFIG_DDR_TYPE_DDR3,
-	.DRAMFreq				= {912, 0, 0, 0},
-	.ddr_base_addr			= CFG_DDR_BASE_ADDR,
-	.ddr_start_offset		= CFG_DDR_START_OFFSET,
-	//.imem_load_addr			= 0xFFFC0000, //sram
-	//.dmem_load_size			= 0x1000, //4K
-
-	.DisabledDbyte			= 0xf0,
-	.Is2Ttiming				= 1,
-	.HdtCtrl				= 0xC8,
-	.dram_cs0_size_MB		= 0xffff,
-	.dram_cs1_size_MB		= 0,
-	.training_SequenceCtrl	= {0x31f,0}, //ddr3 0x21f 0x31f
-	.phy_odt_config_rank	= {0x23,0x13}, //use 0x23 0x13  compatibility with 1rank and 2rank //targeting rank 0. [3:0] is used //for write ODT [7:4] is used for //read ODT
-	.dfi_odt_config			= 0x0d0d,  //use 0d0d compatibility with 1rank and 2rank  //0808
-	.PllBypassEn			= 0, //bit0-ps0,bit1-ps1
-	.ddr_rdbi_wr_enable		= 0,
-	.clk_drv_ohm			= 40,
-	.cs_drv_ohm				= 40,
-	.ac_drv_ohm				= 40,
-	.soc_data_drv_ohm_p		= 34,
-	.soc_data_drv_ohm_n		= 34,
-	.soc_data_odt_ohm_p		= 60, //48,
-	.soc_data_odt_ohm_n		= 0,
-	.dram_data_drv_ohm		= 34, //ddr4 sdram only 34 or 48, skt board use 34 better
-	.dram_data_odt_ohm		= 60,
-	.dram_ac_odt_ohm		= 0,
-	.soc_clk_slew_rate		= 0x300,
-	.soc_cs_slew_rate		= 0x300,
-	.soc_ac_slew_rate		= 0x300,
-	.soc_data_slew_rate		= 0x200,
-	.vref_output_permil		= 500,
-	.vref_receiver_permil	= 500, //700,
-	.vref_dram_permil		= 500, //700,
-	//.vref_reverse			= 0,
-	.ac_trace_delay			= {32,32,32,32,32,32,32,32,32,32},
-	//{00,00},
-	.ac_pinmux				= {00,00},
-#if 1
-	.ddr_dmc_remap			= {
-							[0] = ( 5 |  7 << 5 |  8 << 10 |  9 << 15 | 10 << 20 | 11 << 25 ),
-							[1] = ( 12|  0 << 5 |  0 << 10 | 14 << 15 | 15 << 20 | 16 << 25 ),
-							[2] = ( 17| 18 << 5 | 19 << 10 | 21 << 15 | 22 << 20 | 23 << 25 ),
-							[3] = ( 24| 25 << 5 | 26 << 10 | 27 << 15 | 28 << 20 | 29 << 25 ),
-							[4] = ( 30| 13 << 5 | 20 << 10 |  6 << 15 |  0 << 20 |  0 << 25 ),
-	},
-#else
-	//16bit
-	.ddr_dmc_remap			= {
-							[0] = ( 0 |  5 << 5 |  6<< 10 |  7 << 15 | 8 << 20 | 9 << 25 ),
-							[1] = ( 10|  0 << 5 |  0 << 10 | 14 << 15 | 15 << 20 | 16 << 25 ),
-							[2] = ( 17|( 18 << 5) |( 19 << 10) |( 20< 15) |( 21 << 20) | (22 << 25 )),
-							[3] = ( 23| 24 << 5 | 25 << 10 | 26 << 15 | 27 << 20 | 28 << 25 ),
-							[4] = ( 29| 11<< 5 | 12 << 10 |  13<< 15 |  0 << 20 |  0 << 25 ),
-	},
-#endif
-	.ddr_lpddr34_ca_remap	= {00,00},
-	.ddr_lpddr34_dq_remap	= {00,00},
-	.dram_rtt_nom_wr_park	= {00,00},
-
-	/* pll ssc config:
-	 *
-	 *   pll_ssc_mode = (1<<20) | (1<<8) | ([strength] << 4) | [mode],
-	 *      ppm = strength * 500
-	 *      mode: 0=center, 1=up, 2=down
-	 *
-	 *   eg:
-	 *     1. config 1000ppm center ss. then mode=0, strength=2
-	 *        .pll_ssc_mode = (1<<20) | (1<<8) | (2 << 4) | 0,
-	 *     2. config 3000ppm down ss. then mode=2, strength=6
-	 *        .pll_ssc_mode = (1<<20) | (1<<8) | (6 << 4) | 2,
-	 */
-	.pll_ssc_mode			= (1<<20) | (1<<8) | (2<<4) | 0,//center_ssc_1000ppm
-	.ddr_func				= DDR_FUNC,
-	.magic					= DRAM_CFG_MAGIC,
-	.fast_boot[0]			= 1,
-},
-{
-	/* lpddr4 */
+	/* sm1 Banana Pi bpi-m5 lpddr4 */
 	.board_id				= CONFIG_BOARD_ID_MASK,
 	.version				= 1,
 	//.dram_rank_config		= CONFIG_DDR0_32BIT_RANK01_CH0,
 	.dram_rank_config		= CONFIG_DDR0_32BIT_RANK01_CH01,
-	.ddr_rfc_type			= DDR_RFC_TYPE_LPDDR4_4Gbx1,
+	.ddr_rfc_type			= DDR_RFC_TYPE_LPDDR4_8Gbx1,
 	.DramType				= CONFIG_DDR_TYPE_LPDDR4,
 	.DRAMFreq				= {1392, 0, 0, 0},
 	.ddr_base_addr			= CFG_DDR_BASE_ADDR,
@@ -229,8 +76,8 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.DisabledDbyte			= 0xf0,
 	.Is2Ttiming				= 0,
 	.HdtCtrl				= 0xa,
-	.dram_cs0_size_MB		= 0xffff,//1024,
-	.dram_cs1_size_MB		= 0xffff,//1024,
+	.dram_cs0_size_MB		= 0x800,//2048,
+	.dram_cs1_size_MB		= 0x800,//2048,
 	.training_SequenceCtrl	= {0x131f,0x61}, //ddr3 0x21f 0x31f
 	.phy_odt_config_rank	= {0x23,0x13}, //use 0x23 0x13  compatibility with 1rank and 2rank //targeting rank 0. [3:0] is used //for write ODT [7:4] is used for //read ODT
 	.dfi_odt_config			= 0x0d0d,  //use 0d0d compatibility with 1rank and 2rank  //0808
@@ -242,9 +89,9 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.soc_data_drv_ohm_p		= 40,
 	.soc_data_drv_ohm_n		= 40,
 	.soc_data_odt_ohm_p		= 0,
-	.soc_data_odt_ohm_n		= 120,
+	.soc_data_odt_ohm_n		= 48,
 	.dram_data_drv_ohm		= 40, //lpddr4 sdram only240/1-6
-	.dram_data_odt_ohm		= 120,
+	.dram_data_odt_ohm		= 48,
 	.dram_ac_odt_ohm		= 120,
 	.lpddr4_dram_vout_voltage_1_3_2_5_setting = 1,///1, 1/3vddq     0 2/5 vddq
 	.soc_clk_slew_rate		= 0x3ff,//0x253,
@@ -256,7 +103,6 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.vref_dram_permil		= 0,
 	//.vref_reverse			= 0,
 	.ac_trace_delay			= {00,0x0,0,0,0,0,0x0,00},
-	//.ac_trace_delay		= {32,32,32,32,32,32,32,32,32,32},
 	.ac_pinmux				= {00,00},
 	.ddr_dmc_remap			= {
 							[0] = ( 5 |  6 << 5 |  7 << 10 |  8<< 15 | 9<< 20 | 10 << 25 ),
@@ -266,7 +112,7 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 							[4] = ( 30| 12 << 5 | 13 << 10 |  14<< 15 |  0 << 20 |  0 << 25 ),
 	},
 	.ddr_lpddr34_ca_remap	= {00,00},
-	.ddr_lpddr34_dq_remap	= {3,2,0,1,7,6,5,4, 10,9,14,11,8,12,13,15, 20,21,23,22,18,17,19,16, 28,26,25,24,31,30,27,29},
+	.ddr_lpddr34_dq_remap	= {3,0,2,1,7,6,5,4, 13,12,15,14,10,8,11,9, 19,21,22,20,16,18,17,23, 26,27,25,24,31,29,30,28},
 	.dram_rtt_nom_wr_park	= {00,00},
 
 	/* pll ssc config:
@@ -285,11 +131,10 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.ddr_func				= DDR_FUNC,
 	.magic					= DRAM_CFG_MAGIC,
 	.diagnose				= CONFIG_DIAGNOSE_DISABLE,
-	.fast_boot[0]			= 1,
 },
 {
-	/* Y2 dongle */
-	.board_id				= 0,//CONFIG_BOARD_ID_MASK,
+	/* sm1 Banana Pi bpi-m2 lpddr4 */
+	.board_id				= CONFIG_BOARD_ID_MASK,
 	.version				= 1,
 	//.dram_rank_config		= CONFIG_DDR0_32BIT_RANK01_CH0,
 	.dram_rank_config		= CONFIG_DDR0_32BIT_RANK0_CH01,
@@ -304,7 +149,7 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.DisabledDbyte			= 0xf0,
 	.Is2Ttiming				= 0,
 	.HdtCtrl				= 0xa,
-	.dram_cs0_size_MB		= 0xffff,//1024,
+	.dram_cs0_size_MB		= 0x800,//2048,
 	.dram_cs1_size_MB		= 0,//1024,
 	.training_SequenceCtrl	= {0x131f,0x61}, //ddr3 0x21f 0x31f
 	.phy_odt_config_rank	= {0x23,0x13}, //use 0x23 0x13  compatibility with 1rank and 2rank //targeting rank 0. [3:0] is used //for write ODT [7:4] is used for //read ODT
@@ -317,9 +162,9 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.soc_data_drv_ohm_p		= 40,
 	.soc_data_drv_ohm_n		= 40,
 	.soc_data_odt_ohm_p		= 0,
-	.soc_data_odt_ohm_n		= 120,
+	.soc_data_odt_ohm_n		= 48,
 	.dram_data_drv_ohm		= 40, //lpddr4 sdram only240/1-6
-	.dram_data_odt_ohm		= 120,
+	.dram_data_odt_ohm		= 48,
 	.dram_ac_odt_ohm		= 120,
 	.lpddr4_dram_vout_voltage_1_3_2_5_setting = 1,///1, 1/3vddq     0 2/5 vddq
 	.soc_clk_slew_rate		= 0x3ff,//0x253,
@@ -340,7 +185,7 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 							[4] = ( 30| 12 << 5 | 13 << 10 |  14<< 15 |  0 << 20 |  0 << 25 ),
 	},
 	.ddr_lpddr34_ca_remap	= {00,00},
-	.ddr_lpddr34_dq_remap	= {3,2,0,1,7,6,5,4, 10,9,14,11,8,12,13,15, 20,21,23,22,18,17,19,16, 28,26,25,24,31,30,27,29},
+	.ddr_lpddr34_dq_remap	= {3,0,2,1,7,6,5,4, 13,12,15,14,10,8,11,9, 19,21,22,20,16,18,17,23, 26,27,25,24,31,29,30,28},
 	.dram_rtt_nom_wr_park	= {00,00},
 	/* pll ssc config:
 	 *
@@ -357,7 +202,6 @@ ddr_set_t __ddr_setting[] __attribute__ ((section(".ddr_settings"))) = {
 	.pll_ssc_mode			= (1<<20) | (1<<8) | (2<<4) | 0,//center_ssc_1000ppm
 	.ddr_func				= DDR_FUNC,
 	.magic					= DRAM_CFG_MAGIC,
-	.fast_boot[0]			= 1,
 },
 };
 
@@ -454,7 +298,7 @@ ddr_reg_t __ddr_reg[] = {
 	#define VDDEE_VAL_REG1	0x0004000e
 #elif (VDDEE_VAL == 850)
 	#define VDDEE_VAL_REG0	0x000b0011
-	#define VDDEE_VAL_REG1	0x00030019
+	#define VDDEE_VAL_REG1	0x0003000f
 #elif (VDDEE_VAL == 860)
 	#define VDDEE_VAL_REG0	0x000a0012
 	#define VDDEE_VAL_REG1	0x00020010
@@ -509,17 +353,18 @@ bl2_reg_t __bl2_reg[] = {
 	{AO_PWM_MISC_REG_AB,  ((1 << 23) | (1 << 1)),  (0x7f << 16), 0, BL2_INIT_STAGE_PWM_INIT | PWM_CFG1,  0},
 	{AO_PIN_MUX_REG1,     (3 << 16),               (0xF << 16),  0, BL2_INIT_STAGE_PWM_INIT | PWM_CFG1,  0},
 	/* VDDEE init done */
-
-	/* Enable 5V_EN */
-	{GPIO_O_EN_N_REG3,    (1 << 8),                (1 << 8),     0, BL2_INIT_STAGE_1, 0},
-	{GPIO_O_REG3,         (1 << 8),                (1 << 8),   0, BL2_INIT_STAGE_1, 0},
-	/* Enable CPUA ,control by GPIOAO_4 */
-	{AO_GPIO_O_EN_N,    (0 << 4),                (1 << 4),     0, BL2_INIT_STAGE_1, 0},
-	{AO_GPIO_O,         (1 << 4),                (1 << 4),   0, BL2_INIT_STAGE_1, 0},
+#if 0	// mSD card boot: unset for sm1 Banana Pi bpi-m5
+	/* Enable 5V_EN (GPIOH_8, TFLASH_VDD_EN out) */
+ 	{GPIO_O_EN_N_REG3,    (0 << 8),                (1 << 8),     0, BL2_INIT_STAGE_1, 0},
+ 	{GPIO_O_REG3,         (1 << 8),                0xffffffff,   0, BL2_INIT_STAGE_1, 0},
+#endif
 	/* Enable VCCK */
-	{AO_SEC_REG0,         (1 << 0),                (1 << 0),     0, BL2_INIT_STAGE_1, 0},
-	{AO_GPIO_O,           (1 << 31),               (1 << 31),    0, BL2_INIT_STAGE_1, 0},
-	/* Init sys led*/
+	{AO_SEC_REG0,         (1 << 0),                0xffffffff,   0, BL2_INIT_STAGE_1, 0},
+	{AO_GPIO_O,           (1 << 31),               0xffffffff,   0, BL2_INIT_STAGE_1, 0},
+	/* Init sys led1 (gpioAO_11, blue) */
 	{AO_GPIO_O_EN_N,      (0 << 11),               (1 << 11),    0, BL2_INIT_STAGE_1, 0},
-	{AO_GPIO_O,           (1 << 11),               (1 << 11),    0, BL2_INIT_STAGE_1, 0},
+	{AO_GPIO_O,           (0 << 11),               (1 << 11),    0, BL2_INIT_STAGE_1, 0},
+	/* Init sys led2 (gpioAO_2, green) */
+	{AO_GPIO_O_EN_N,      (0 << 2),                (1 << 2),     0, BL2_INIT_STAGE_1, 0},
+	{AO_GPIO_O,           (0 << 2),                (1 << 2),     0, BL2_INIT_STAGE_1, 0},
 };

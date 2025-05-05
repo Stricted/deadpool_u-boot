@@ -1,7 +1,8 @@
 
 /*
+ * board/amlogic/configs/g12a_u212_v1.h
  *
- * Copyright (C) 2018 Amlogic, Inc. All rights reserved.
+ * Copyright (C) 2015 Amlogic, Inc. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifndef __G12B_W400_V1_H__
-#define __G12B_W400_V1_H__
+#ifndef __SM1_BANANAPIM5_V1_H__
+#define __SM1_BANANAPIM5_V1_H__
 
 #include <asm/arch/cpu.h>
 
@@ -33,7 +34,7 @@
  */
 #define CONFIG_PLATFORM_POWER_INIT
 #define CONFIG_VCCK_INIT_VOLTAGE	800		// VCCK power up voltage
-#define CONFIG_VDDEE_INIT_VOLTAGE	800		// VDDEE power up voltage
+#define CONFIG_VDDEE_INIT_VOLTAGE	850		// VDDEE power up voltage
 #define CONFIG_VDDEE_SLEEP_VOLTAGE	770		// VDDEE suspend voltage
 
 /* configs for CEC */
@@ -46,7 +47,6 @@
 
 /* config saradc*/
 #define CONFIG_CMD_SARADC 1
-#define CONFIG_SARADC_CH  2
 
 /* Bootloader Control Block function
    That is used for recovery and the bootloader to talk to each other
@@ -54,6 +54,7 @@
 #define CONFIG_BOOTLOADER_CONTROL_BLOCK
 
 #define CONFIG_CMD_BOOTCTOL_AVB
+#define CONFIG_AVB2_KPUB_VENDOR 1
 
 /* support ext4*/
 #define CONFIG_CMD_EXT4 1
@@ -86,11 +87,11 @@
         "upgrade_step=0\0"\
         "jtag=disable\0"\
         "loadaddr=1080000\0"\
-        "panel_type=lcd_2\0" \
+        "panel_type=lcd_1\0" \
 	"lcd_ctrl=0x00000000\0" \
-        "outputmode=panel\0" \
+	"outputmode=1080p60hz\0" \
         "hdmimode=1080p60hz\0" \
-        "colorattribute=444,8bit\0"\
+	"colorattribute=444,8bit\0"\
         "cvbsmode=576cvbs\0" \
         "display_width=1920\0" \
         "display_height=1080\0" \
@@ -119,18 +120,18 @@
         "wipe_cache=successful\0"\
         "EnableSelinux=enforcing\0" \
         "recovery_part=recovery\0"\
+        "lock=10100000\0"\
         "recovery_offset=0\0"\
         "cvbs_drv=0\0"\
-        "lock=10101000\0"\
         "osd_reverse=0\0"\
         "video_reverse=0\0"\
         "active_slot=normal\0"\
         "boot_part=boot\0"\
-        "Irq_check_en=0\0"\
         "reboot_mode_android=""normal""\0"\
+        "Irq_check_en=0\0"\
         "fs_type=""rootfstype=ramfs""\0"\
         "initargs="\
-            "init=/init console=ttyS0,115200 no_console_suspend earlycon=aml-uart,0xff803000 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "\
+            "init=/init console=null earlyprintk=aml-uart,0xff803000 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "\
             "\0"\
         "upgrade_check="\
             "echo upgrade_step=${upgrade_step}; "\
@@ -139,8 +140,8 @@
             "else fi;"\
             "\0"\
         "storeargs="\
-            "get_bootloaderversion;" \
-            "setenv bootargs ${initargs}  hdr_priority=${hdr_priority} otg_device=${otg_device} reboot_mode_android=${reboot_mode_android} logo=${display_layer},loaded,${fb_addr} fb_width=${fb_width} fb_height=${fb_height} display_bpp=${display_bpp} outputmode=${outputmode} vout2=${outputmode2},enable vout=${outputmode},enable panel_type=${panel_type} lcd_ctrl=${lcd_ctrl} hdmitx=${cecconfig},${colorattribute} hdmimode=${hdmimode} hdmichecksum=${hdmichecksum} dolby_vision_on=${dolby_vision_on} frac_rate_policy=${frac_rate_policy} hdmi_read_edid=${hdmi_read_edid} cvbsmode=${cvbsmode} osd_reverse=${osd_reverse} video_reverse=${video_reverse} irq_check_en=${Irq_check_en}  androidboot.selinux=${EnableSelinux} androidboot.firstboot=${firstboot} jtag=${jtag}; "\
+		"get_bootloaderversion;" \
+		"setenv bootargs ${initargs}  hdr_priority=${hdr_priority} otg_device=${otg_device} reboot_mode_android=${reboot_mode_android} logo=${display_layer},loaded,${fb_addr} fb_width=${fb_width} fb_height=${fb_height} display_bpp=${display_bpp} outputmode=${outputmode} vout=${outputmode},enable panel_type=${panel_type} lcd_ctrl=${lcd_ctrl} hdmitx=${cecconfig},${colorattribute} hdmimode=${hdmimode} hdmichecksum=${hdmichecksum} dolby_vision_on=${dolby_vision_on} frac_rate_policy=${frac_rate_policy} hdmi_read_edid=${hdmi_read_edid} cvbsmode=${cvbsmode} osd_reverse=${osd_reverse} video_reverse=${video_reverse} irq_check_en=${Irq_check_en}  androidboot.selinux=${EnableSelinux} androidboot.firstboot=${firstboot} jtag=${jtag}; "\
 	"setenv bootargs ${bootargs} androidboot.hardware=amlogic androidboot.bootloader=${bootloader_version} androidboot.build.expect.baseband=N/A;"\
             "run cmdline_keys;"\
             "\0"\
@@ -251,15 +252,20 @@
             "get_valid_slot;"\
             "echo active_slot: ${active_slot};"\
             "if test ${active_slot} = normal; then "\
-                "setenv bootargs ${bootargs} ${fs_type} aml_dt=${aml_dt} recovery_part={recovery_part} recovery_offset={recovery_offset};"\
+                "setenv bootargs ${bootargs} ${fs_type} aml_dt=${aml_dt} recovery_part=${recovery_part} recovery_offset=${recovery_offset};"\
                 "if itest ${upgrade_step} == 3; then "\
                     "if ext4load mmc 1:2 ${dtb_mem_addr} /recovery/dtb.img; then echo cache dtb.img loaded; fi;"\
                     "if ext4load mmc 1:2 ${loadaddr} /recovery/recovery.img; then echo cache recovery.img loaded; wipeisb; bootm ${loadaddr}; fi;"\
                 "else fi;"\
                 "if imgread kernel ${recovery_part} ${loadaddr} ${recovery_offset}; then wipeisb; bootm ${loadaddr}; fi;"\
             "else "\
-                "setenv bootargs ${bootargs} ${fs_type} aml_dt=${aml_dt} recovery_part=${boot_part} recovery_offset=${recovery_offset};"\
-                "if imgread kernel ${boot_part} ${loadaddr}; then bootm ${loadaddr}; fi;"\
+                "if test ${partiton_mode} = normal; then "\
+                    "setenv bootargs ${bootargs} ${fs_type} aml_dt=${aml_dt} recovery_part=${boot_part} recovery_offset=${recovery_offset};"\
+                    "if imgread kernel ${boot_part} ${loadaddr}; then bootm ${loadaddr}; fi;"\
+                "else "\
+                    "setenv bootargs ${bootargs} ${fs_type} aml_dt=${aml_dt} recovery_part=${recovery_part} recovery_offset=${recovery_offset};"\
+                    "if imgread kernel ${recovery_part} ${loadaddr} ${recovery_offset}; then wipeisb; bootm ${loadaddr}; fi;"\
+                "fi;"\
             "fi;"\
             "\0"\
         "init_display="\
@@ -278,7 +284,7 @@
             "else "\
                 "setenv reboot_mode_android ""normal"";"\
                 "run storeargs;"\
-                "hdmitx hpd;hdmitx get_preferred_mode;hdmitx get_parse_edid;dovi process;osd dual_logo;dovi set;dovi pkg;vpp hdrpkt;"\
+                "hdmitx hpd;hdmitx get_preferred_mode;hdmitx get_parse_edid;setenv dolby_status 0;setenv dolby_vision_on 0;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;vout output ${outputmode};vpp hdrpkt;"\
             "fi;fi;"\
             "\0"\
         "cmdline_keys="\
@@ -287,8 +293,8 @@
                     "setenv bootargs ${bootargs} androidboot.serialno=${usid};"\
                     "setenv serial ${usid};"\
                 "else "\
-                    "setenv bootargs ${bootargs} androidboot.serialno=1234567890;"\
-                    "setenv serial 1234567890;"\
+                    "setenv bootargs ${bootargs} androidboot.serialno=1234567892;"\
+                    "setenv serial 1234567892;"\
                 "fi;"\
                 "if keyman read mac ${loadaddr} str; then "\
                     "setenv bootargs ${bootargs} mac=${mac} androidboot.mac=${mac};"\
@@ -299,7 +305,11 @@
                 "if keyman read oemkey ${loadaddr} str; then "\
                     "setenv bootargs ${bootargs} androidboot.oem.key1=${oemkey};"\
                 "else "\
-                    "setenv bootargs ${bootargs} androidboot.oem.key1=ATV00104319;"\
+                    "setenv bootargs ${bootargs} androidboot.oem.key1=ATV00100020;"\
+                "fi;"\
+                "if keyman read dtbo ${loadaddr} str; then "\
+                    "setenv bootargs ${bootargs} androidboot.dtbo_idx=${dtbo};"\
+                    "setenv androidboot.dtbo_idx ${dtbo};"\
                 "fi;"\
             "fi;"\
             "\0"\
@@ -310,6 +320,11 @@
         "upgrade_key="\
             "if gpio input GPIOAO_3; then "\
                 "echo detect upgrade key; run update;"\
+            "fi;"\
+            "\0"\
+        "recovery_key="\
+            "if gpio input GPIOAO_3; then "\
+                "echo detect recovery key; run recovery_from_flash;"\
             "fi;"\
             "\0"\
 	"irremote_update="\
@@ -329,42 +344,11 @@
             "run upgrade_check;"\
             "run init_display;"\
             "run storeargs;"\
-            "forceupdate;" \
+            "run recovery_key;" \
             "bcb uboot-command;"\
             "run switch_bootmode;"
 
 #define CONFIG_BOOTCOMMAND "run storeboot"
-
-/*
- * logo image path: device/amlogic/$(proj_name)/logo_img_files/
- *
- * dual logo config macro
- * logo1: bootup.bmp/bootup_rotate.bmp (or find env "board_defined_bootup" first in uboot)
- * logo2: bootup_rotate_secondary.bmp (for portrait screen)
- */
-#define CONFIG_DUAL_LOGO \
-	"setenv outputmode 1080p60hz;setenv display_layer osd0;"\
-	"setenv fb_height 1080; setenv fb_width 1920;"\
-	"vout output $outputmode;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;"\
-	"setenv outputmode2 panel;setenv display_layer viu2_osd0;"\
-	"vout2 prepare panel;osd open;osd clear;imgread pic logo bootup_rotate_secondary $loadaddr;bmp display $bootup_rotate_secondary_offset;bmp scale;vout2 output panel;"\
-	"\0"\
-
-/* for portrait panel, recovery always displays on panel */
-#define CONFIG_RECOVERY_DUAL_LOGO \
-	"setenv outputmode panel;setenv display_layer osd0;"\
-	"setenv fb_height 1920; setenv fb_width 1080;"\
-	"vout output $outputmode;osd open;osd clear;imgread pic logo bootup_rotate $loadaddr;bmp display $bootup_rotate_offset;bmp scale;"\
-	"setenv outputmode2 1080p60hz;setenv display_layer viu2_osd0;"\
-	"vout2 prepare $outputmode2;vout2 output $outputmode2;osd open;osd clear;imgread pic logo bootup $loadaddr;bmp display $bootup_offset;bmp scale;"\
-	"\0"\
-
-/* buffer rotate for portrait screen */
-#define CONFIG_SINGLE_LOGO \
-	"setenv outputmode panel;setenv display_layer osd0;"\
-	"setenv fb_height 1920; setenv fb_width 1080;"\
-	"vout output panel;osd open;osd clear;imgread pic logo bootup_rotate $loadaddr;bmp display $bootup_rotate_offset;bmp scale;"\
-	"\0"\
 
 //#define CONFIG_ENV_IS_NOWHERE  1
 #define CONFIG_ENV_SIZE   (64*1024)
@@ -391,7 +375,6 @@
 #define CONFIG_DDR_USE_EXT_VREF			0 //0:disable, 1:enable. ddr use external vref
 #define CONFIG_DDR4_TIMING_TEST			0 //0:disable, 1:enable. ddr4 timing test function
 #define CONFIG_DDR_PLL_BYPASS			0 //0:disable, 1:enable. ddr pll bypass function
-#define CONFIG_DDR_NONSEC_SCRAMBLE		0 //0:disable, 1:enable. non-sec region scramble function
 
 /* storage: emmc/nand/sd */
 #define		CONFIG_STORE_COMPATIBLE 1
@@ -482,7 +465,7 @@
 
 /* meson SPI */
 #define CONFIG_AML_SPIFC
-#define CONFIG_AML_SPICC
+//#define CONFIG_AML_SPICC
 #if defined CONFIG_AML_SPIFC || defined CONFIG_AML_SPICC
 	#define CONFIG_OF_SPI
 	#define CONFIG_DM_SPI
@@ -528,10 +511,6 @@
 /* DISPLAY & HDMITX */
 #define CONFIG_AML_HDMITX20 1
 
-#if defined(CONFIG_AML_HDMITX20)
-#undef CONFIG_AML_DOLBY
-#endif
-
 #define CONFIG_AML_CANVAS 1
 #define CONFIG_AML_VOUT 1
 #define CONFIG_AML_OSD 1
@@ -543,9 +522,9 @@
 #define CONFIG_AML_CVBS 1
 #endif
 
-#define CONFIG_AML_LCD    1
-#define CONFIG_AML_LCD_TABLET 1
-#define CONFIG_AML_LCD_EXTERN 1
+// #define CONFIG_AML_LCD    1
+// #define CONFIG_AML_LCD_TABLET 1
+// #define CONFIG_AML_LCD_EXTERN 1
 
 
 /* USB
@@ -572,7 +551,7 @@
 #define CONFIG_USB_DEVICE_V2    1
 #define USB_PHY2_PLL_PARAMETER_1	0x09400414
 #define USB_PHY2_PLL_PARAMETER_2	0x927e0000
-#define USB_PHY2_PLL_PARAMETER_3	0xAC5F69E5
+#define USB_PHY2_PLL_PARAMETER_3	0xAC5F49E5
 #define USB_G12x_PHY_PLL_SETTING_1	(0xfe18)
 #define USB_G12x_PHY_PLL_SETTING_2	(0xfff)
 #define USB_G12x_PHY_PLL_SETTING_3	(0x78000)
@@ -587,7 +566,7 @@
 #define CONFIG_USBDOWNLOAD_GADGET 1
 #define CONFIG_SYS_CACHELINE_SIZE 64
 #define CONFIG_FASTBOOT_MAX_DOWN_SIZE	0x8000000
-#define CONFIG_DEVICE_PRODUCT	"galilei"
+#define CONFIG_DEVICE_PRODUCT	"m5"
 
 //UBOOT Facotry usb/sdcard burning config
 #define CONFIG_AML_V2_FACTORY_BURN              1       //support facotry usb burning
@@ -619,6 +598,7 @@
 /* other devices */
 /* I2C DM driver*/
 //#define CONFIG_DM_I2C
+
 #if defined(CONFIG_DM_I2C)
 #define CONFIG_SYS_I2C_MESON		1
 #else
@@ -646,7 +626,6 @@
 #define CONFIG_CMD_JTAG	1
 #define CONFIG_CMD_AUTOSCRIPT 1
 #define CONFIG_CMD_MISC 1
-#define CONFIG_CMD_PLLTEST 1
 
 /*file system*/
 #define CONFIG_DOS_PARTITION 1
@@ -656,11 +635,6 @@
 #define CONFIG_FS_FAT 1
 #define CONFIG_FS_EXT4 1
 #define CONFIG_LZO 1
-
-#define CONFIG_MDUMP_COMPRESS 1
-#define CONFIG_EXT4_WRITE 1
-#define CONFIG_CMD_EXT4 1
-#define CONFIG_CMD_EXT4_WRITE 1
 
 /* Cache Definitions */
 //#define CONFIG_SYS_DCACHE_OFF
@@ -722,8 +696,8 @@
 
 /* Choose One of Ethernet Type */
 #undef CONFIG_ETHERNET_NONE
-#define ETHERNET_INTERNAL_PHY
-#undef ETHERNET_EXTERNAL_PHY
+#undef ETHERNET_INTERNAL_PHY
+#define ETHERNET_EXTERNAL_PHY
 
 #define CONFIG_HIGH_TEMP_COOL 90
 #endif
