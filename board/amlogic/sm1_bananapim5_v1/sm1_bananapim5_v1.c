@@ -620,6 +620,11 @@ int board_init(void)
 	set_i2c_ao_pinmux();
 #endif
 
+/* USB3-HUB init */
+run_command("gpio set GPIOH_4", 0);
+udelay(100);
+run_command("gpio set GPIOH_6", 0);
+
 	return 0;
 }
 
