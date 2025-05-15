@@ -620,6 +620,28 @@ int board_init(void)
 	set_i2c_ao_pinmux();
 #endif
 
+/* BPI-M5 power on USB3-HUB */
+unsigned int val;
+	val = readl(PREG_PAD_GPIO3_EN_N);
+	val &= ~(1<<6);
+	writel(val, PREG_PAD_GPIO3_EN_N);
+	printf("gpio: GPIOH_6 usb power-on\n");
+
+	val = readl(PERIPHS_PIN_MUX_C);
+	val &= (~(0xf));
+	writel(val, PERIPHS_PIN_MUX_C);
+
+	udelay(100);
+
+	val = readl(PREG_PAD_GPIO3_EN_N);
+	val &= ~(1<<4);
+	writel(val, PREG_PAD_GPIO3_EN_N);
+	printf("gpio: GPIOH_4 usb reset\n");
+
+	val = readl(PERIPHS_PIN_MUX_C);
+	val &= (~(0xf));
+	writel(val, PERIPHS_PIN_MUX_C);
+
 	return 0;
 }
 
