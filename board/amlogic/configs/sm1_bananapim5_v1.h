@@ -249,6 +249,7 @@
                 "bootm ${loadaddr};fi;"\
             "\0"\
         "recovery_from_flash="\
+            "run aml_dt_check;"\
             "get_valid_slot;"\
             "echo active_slot: ${active_slot};"\
             "if test ${active_slot} = normal; then "\
@@ -311,6 +312,13 @@
                     "setenv bootargs ${bootargs} androidboot.dtbo_idx=${dtbo};"\
                     "setenv androidboot.dtbo_idx ${dtbo};"\
                 "fi;"\
+            "fi;"\
+            "\0"\
+        "aml_dt_check="\
+            "if test -n ${aml_dt}; then "\
+                "echo using dt-id: ${aml_dt}; "\
+            "else "\
+                "setenv aml_dt sm1_ac213_4g; "\
             "fi;"\
             "\0"\
         "bcb_cmd="\
