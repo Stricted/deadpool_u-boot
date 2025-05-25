@@ -335,13 +335,13 @@
                 "echo detect recovery key; run recovery_from_flash;"\
             "fi;"\
             "\0"\
-            "\0"\
         "wifi_module_check="\
             "if gpio input GPIOX_6; then "\
                 "echo M5: no wifi; keyman write dtbo str 0; "\
             "else "\
                 "echo M5: has wifi; keyman write dtbo str 1; "\
             "fi;fi;"\
+            "\0"\
 	"irremote_update="\
 		"if irkey 2500000 0xe31cfb04 0xb748fb04; then "\
 			"echo read irkey ok!; " \
