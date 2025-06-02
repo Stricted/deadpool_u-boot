@@ -627,9 +627,9 @@ unsigned int val;
 	writel(val, PREG_PAD_GPIO3_EN_N);
 	printf("gpio: GPIOH_6 usb power-on\n");
 
-	val = readl(PERIPHS_PIN_MUX_C);
-	val &= (~(0xf));
-	writel(val, PERIPHS_PIN_MUX_C);
+	val = readl(PERIPHS_PIN_MUX_B);
+	val &= (~(0xf << 24));
+	writel(val, PERIPHS_PIN_MUX_B);
 
 	udelay(100);
 
@@ -638,9 +638,9 @@ unsigned int val;
 	writel(val, PREG_PAD_GPIO3_EN_N);
 	printf("gpio: GPIOH_4 usb reset\n");
 
-	val = readl(PERIPHS_PIN_MUX_C);
-	val &= (~(0xf));
-	writel(val, PERIPHS_PIN_MUX_C);
+	val = readl(PERIPHS_PIN_MUX_B);
+	val &= (~(0xf << 16));
+	writel(val, PERIPHS_PIN_MUX_B);
 
 	return 0;
 }
