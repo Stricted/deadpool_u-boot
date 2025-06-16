@@ -139,6 +139,13 @@
                 "run init_display; run storeargs; run update;"\
             "else fi;"\
             "\0"\
+        "upgrade_adc_key="\
+            "saradc open 2; saradc getval; "\
+            "if saradc get_in_range 0x0 0x50; then "\
+                "echo update by adc key; "\
+                "run update; "\
+            "fi;"\
+            "\0"\
         "storeargs="\
 		"get_bootloaderversion;" \
 		"setenv bootargs ${initargs}  hdr_priority=${hdr_priority} otg_device=${otg_device} reboot_mode_android=${reboot_mode_android} logo=${display_layer},loaded,${fb_addr} fb_width=${fb_width} fb_height=${fb_height} display_bpp=${display_bpp} outputmode=${outputmode} vout=${outputmode},enable panel_type=${panel_type} lcd_ctrl=${lcd_ctrl} hdmitx=${cecconfig},${colorattribute} hdmimode=${hdmimode} hdmichecksum=${hdmichecksum} dolby_vision_on=${dolby_vision_on} frac_rate_policy=${frac_rate_policy} hdmi_read_edid=${hdmi_read_edid} cvbsmode=${cvbsmode} osd_reverse=${osd_reverse} video_reverse=${video_reverse} irq_check_en=${Irq_check_en}  androidboot.selinux=${EnableSelinux} androidboot.firstboot=${firstboot} jtag=${jtag}; "\
@@ -325,11 +332,6 @@
             "get_avb_mode;"\
             "get_valid_slot;"\
             "\0"\
-        "upgrade_key="\
-            "if gpio input GPIOAO_3; then "\
-                "echo detect upgrade key; run update;"\
-            "fi;"\
-            "\0"\
         "recovery_key="\
             "if gpio input GPIOAO_3; then "\
                 "echo detect recovery key; run recovery_from_flash;"\
@@ -357,6 +359,7 @@
             "run bcb_cmd; "\
             "run factory_reset_poweroff_protect;"\
             "run upgrade_check;"\
+            "run upgrade_adc_key;"\
             "run init_display;"\
             "run wifi_module_check;"\
             "run storeargs;"\
