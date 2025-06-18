@@ -141,7 +141,7 @@ int bcm2835_mbox_call_prop(u32 chan, struct bcm2835_mbox_hdr *buffer)
 			return -1;
 		}
 		/*
-		 * Clear the reponse bit so clients can just look right at the
+		 * Clear the response bit so clients can just look right at the
 		 * length field without extra processing
 		 */
 		tag->val_len &= ~BCM2835_MBOX_TAG_VAL_LEN_RESPONSE;
