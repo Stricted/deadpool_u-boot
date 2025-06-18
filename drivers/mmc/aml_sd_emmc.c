@@ -388,7 +388,7 @@ int aml_sd_send_cmd_ffu(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *d
 			des_cmd_cur->resp_128 = 1;
 
 		if (cmd->resp_type & MMC_RSP_BUSY)
-			des_cmd_cur->r1b = 1;    //check data0 busy after R1 reponse
+			des_cmd_cur->r1b = 1;    //check data0 busy after R1 response
 
 		if (!(cmd->resp_type & MMC_RSP_CRC))
 			des_cmd_cur->resp_nocrc = 1;
@@ -574,7 +574,7 @@ int aml_sd_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 			des_cmd_cur->resp_128 = 1;
 
 		if (cmd->resp_type & MMC_RSP_BUSY)
-			des_cmd_cur->r1b = 1;    //check data0 busy after R1 reponse
+			des_cmd_cur->r1b = 1;    //check data0 busy after R1 response
 
 		if (!(cmd->resp_type & MMC_RSP_CRC))
 			des_cmd_cur->resp_nocrc = 1;
