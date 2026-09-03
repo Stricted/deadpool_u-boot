@@ -1206,9 +1206,17 @@ define filechk_version.h
 endef
 
 define filechk_timestamp.h
-	(LC_ALL=C date +'#define U_BOOT_DATE "%b %d %C%y"'; \
-	LC_ALL=C date +'#define U_BOOT_TIME "%T"'; \
-	LC_ALL=C date +'#define U_BOOT_DATE_TIME "%y%m%d.%H%M%S"';)
+	(if test -n "$(SOURCE_DATE_EPOCH)"; then \
+		SOURCE_DATE="@$(SOURCE_DATE_EPOCH)"; \
+	else \
+		SOURCE_DATE="now"; \
+	fi; \
+	LC_ALL=C date -d "$$SOURCE_DATE" +'#define U_BOOT_DATE "%b %d %C%y"' 2>/dev/null || \
+		LC_ALL=C date -ud "$$SOURCE_DATE" +'#define U_BOOT_DATE "%b %d %C%y"'; \
+	LC_ALL=C date -d "$$SOURCE_DATE" +'#define U_BOOT_TIME "%T"' 2>/dev/null || \
+		LC_ALL=C date -ud "$$SOURCE_DATE" +'#define U_BOOT_TIME "%T"'; \
+	LC_ALL=C date -d "$$SOURCE_DATE" +'#define U_BOOT_DATE_TIME "%y%m%d.%H%M%S"' 2>/dev/null || \
+		LC_ALL=C date -ud "$$SOURCE_DATE" +'#define U_BOOT_DATE_TIME "%y%m%d.%H%M%S"';)
 endef
 
 $(version_h): include/config/uboot.release FORCE
