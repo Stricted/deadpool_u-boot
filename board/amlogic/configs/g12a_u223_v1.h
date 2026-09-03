@@ -79,6 +79,12 @@
 
 /* args/envs */
 #define CONFIG_SYS_MAXARGS  64
+#ifdef CONFIG_FORCE_CONSOLE
+#define INITARGS_CONSOLE "console=ttyS0,115200 no_console_suspend "
+#else
+#define INITARGS_CONSOLE "console=null "
+#endif
+
 #define CONFIG_EXTRA_ENV_SETTINGS \
         "firstboot=1\0"\
         "dongle_mode=1\0"\
@@ -128,7 +134,9 @@
         "reboot_mode_android=""normal""\0"\
         "fs_type=""rootfstype=ramfs""\0"\
         "initargs="\
-            "init=/init console=ttyS0,115200 no_console_suspend earlycon=aml-uart,0xff803000 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "\
+            "init=/init "\
+            INITARGS_CONSOLE\
+            "earlycon=aml-uart,0xff803000 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "\
             "\0"\
         "upgrade_check="\
             "echo upgrade_step=${upgrade_step}; "\
@@ -321,6 +329,12 @@
 		"fi;\0" \
 
 
+#ifdef CONFIG_RECOVERY_BOOT
+#define CONFIG_PREBOOT_BOOT_CMD "run recovery_from_flash;"
+#else
+#define CONFIG_PREBOOT_BOOT_CMD "run switch_bootmode;"
+#endif
+
 #define CONFIG_PREBOOT  \
             "run bcb_cmd; "\
             "run factory_reset_poweroff_protect;"\
@@ -329,9 +343,13 @@
             "run storeargs;"\
             "run upgrade_key;" \
             "bcb uboot-command;"\
-            "run switch_bootmode;"
+            CONFIG_PREBOOT_BOOT_CMD
 
+#ifdef CONFIG_RECOVERY_BOOT
+#define CONFIG_BOOTCOMMAND "run recovery_from_flash"
+#else
 #define CONFIG_BOOTCOMMAND "run storeboot"
+#endif
 
 //#define CONFIG_ENV_IS_NOWHERE  1
 #define CONFIG_ENV_SIZE   (64*1024)

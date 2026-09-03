@@ -340,6 +340,12 @@
 		"fi;\0" \
 
 
+#ifdef CONFIG_RECOVERY_BOOT
+#define CONFIG_PREBOOT_BOOT_CMD "run recovery_from_flash;"
+#else
+#define CONFIG_PREBOOT_BOOT_CMD "run switch_bootmode;"
+#endif
+
 #define CONFIG_PREBOOT  \
             "run bcb_cmd; "\
             "run factory_reset_poweroff_protect;"\
@@ -348,8 +354,12 @@
             "run storeargs;"\
             "run adb_setting;"\
             "bcb uboot-command;"\
-            "run switch_bootmode;"
+            CONFIG_PREBOOT_BOOT_CMD
+#ifdef CONFIG_RECOVERY_BOOT
+#define CONFIG_BOOTCOMMAND "run recovery_from_flash"
+#else
 #define CONFIG_BOOTCOMMAND "run storeboot"
+#endif
 
 //#define CONFIG_ENV_IS_NOWHERE  1
 #define CONFIG_ENV_SIZE   (64*1024)

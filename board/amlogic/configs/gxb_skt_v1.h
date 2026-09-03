@@ -59,7 +59,11 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"storeboot=\0"
 #define CONFIG_BOOTARGS "init=/init console=ttyS0,115200 no_console_suspend earlyprintk=aml-uart,0xc81004c0 ramoops.pstore_en=1 ramoops.record_size=0x8000 ramoops.console_size=0x4000 "
+#ifdef CONFIG_RECOVERY_BOOT
+#define CONFIG_BOOTCOMMAND "run recovery_from_flash"
+#else
 #define CONFIG_BOOTCOMMAND "run storeboot"
+#endif
 
 //#define CONFIG_ENV_IS_NOWHERE  1
 #define CONFIG_ENV_SIZE   (64*1024)

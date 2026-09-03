@@ -598,3 +598,28 @@ endif
 if ODROID_C2
 source "board/hardkernel/odroidc2/Kconfig"
 endif
+
+config FORCE_CONSOLE
+	bool "Enable serial console in kernel cmdline"
+	depends on TARGET_MESON_G12A || TARGET_MESON_G12B || TARGET_MESON_SM1 || \
+		   TARGET_MESON_TXL || TARGET_MESON_TXLX || TARGET_MESON_AXG || \
+		   TARGET_MESON_GXL || TARGET_MESON_GXM || TARGET_MESON_TL1 || \
+		   TARGET_MESON_TM2
+	default n
+	help
+	  When enabled, appends "console=ttyS0,115200 no_console_suspend" to
+	  the kernel cmdline via initargs. Disabled by default for production
+	  builds; use the console.cfg fragment to enable.
+
+config RECOVERY_BOOT
+	bool "Boot directly into recovery instead of normal boot"
+	depends on TARGET_MESON_G12A || TARGET_MESON_G12B || TARGET_MESON_SM1 || \
+		   TARGET_MESON_TXL || TARGET_MESON_TXLX || TARGET_MESON_AXG || \
+		   TARGET_MESON_GXL || TARGET_MESON_GXM || TARGET_MESON_TL1 || \
+		   TARGET_MESON_TM2
+	default n
+	help
+	  When enabled, replaces "run switch_bootmode" with
+	  "run recovery_from_flash" as the final PREBOOT command, and sets
+	  BOOTCOMMAND to "run recovery_from_flash" instead of "run storeboot".
+	  Use the recovery.cfg fragment to enable.
