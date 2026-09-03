@@ -32,8 +32,8 @@
  */
 #define CONFIG_PLATFORM_POWER_INIT
 #define CONFIG_VCCK_INIT_VOLTAGE	800		// VCCK power up voltage
-#define CONFIG_VDDEE_INIT_VOLTAGE	840		// VDDEE power up voltage
-#define CONFIG_VDDEE_SLEEP_VOLTAGE	770		// VDDEE suspend voltage
+#define CONFIG_VDDEE_INIT_VOLTAGE	860		// VDDEE power up voltage
+#define CONFIG_VDDEE_SLEEP_VOLTAGE	731		// VDDEE suspend voltage
 
 /* configs for CEC */
 #define CONFIG_CEC_OSD_NAME		"AML_TV"
@@ -52,6 +52,7 @@
 #define CONFIG_BOOTLOADER_CONTROL_BLOCK
 
 #define CONFIG_CMD_BOOTCTOL_AVB
+#define CONFIG_AVB2_KPUB_VENDOR 1
 
 /* support ext4*/
 #define CONFIG_CMD_EXT4 1
@@ -709,8 +710,8 @@
 #endif
 
 /* Choose One of Ethernet Type */
-#undef CONFIG_ETHERNET_NONE
-#define ETHERNET_INTERNAL_PHY
+#define CONFIG_ETHERNET_NONE
+#undef ETHERNET_INTERNAL_PHY
 #undef ETHERNET_EXTERNAL_PHY
 
 #define CONFIG_HIGH_TEMP_COOL 90
