@@ -358,7 +358,7 @@ $(BUILD_DIR) :
 
 $(ELF) : $(OBJS) $(LINKERFILE)
 	@echo "  LD      $$@"
-	@echo 'const char build_message[] = "Built : "__TIME__", "__DATE__". \\nver:${GIT_VERSION} - ${BUILDER}";' | \
+	@echo 'const char build_message[] = "Built : $(shell TZ=UTC date -d "@$(or $(SOURCE_DATE_EPOCH),0)" "+%T, %b %e %Y"). \\nver:${GIT_VERSION} - ${BUILDER}";' | \
 		$$(CC) $$(CFLAGS) -xc - -o $(BUILD_DIR)/build_message.o
 	$$(Q)$$(LD) -o $$@ $$(LDFLAGS) -Map=$(MAPFILE) --script $(LINKERFILE) \
 					$(BUILD_DIR)/build_message.o $(OBJS)
