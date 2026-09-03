@@ -248,6 +248,10 @@ config TL1_T309_V1
 	bool "Support amlogic tl1 t309 v1 board"
 	default n
 
+config SM1_BANANAPIM5_V1
+	bool "Support amlogic sm1 bananapim5 v1 board"
+	default n
+
 config SM1_ODROIDC4_V1
         bool "Support amlogic sm1 odroidc4 v1 board"
         default n
@@ -553,6 +557,10 @@ endif
 
 if TL1_T309_V1
 source "board/amlogic/tl1_t309_v1/Kconfig"
+endif
+
+if SM1_BANANAPIM5_V1
+source "board/amlogic/sm1_bananapim5_v1/Kconfig"
 endif
 
 if SM1_ODROIDC4_V1
