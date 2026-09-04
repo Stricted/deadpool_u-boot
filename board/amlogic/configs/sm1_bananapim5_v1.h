@@ -32,7 +32,7 @@
  */
 #define CONFIG_PLATFORM_POWER_INIT
 #define CONFIG_VCCK_INIT_VOLTAGE	800		// VCCK power up voltage
-#define CONFIG_VDDEE_INIT_VOLTAGE	840		// VDDEE power up voltage
+#define CONFIG_VDDEE_INIT_VOLTAGE	850		// VDDEE power up voltage
 #define CONFIG_VDDEE_SLEEP_VOLTAGE	770		// VDDEE suspend voltage
 
 /* configs for CEC */
@@ -52,6 +52,7 @@
 #define CONFIG_BOOTLOADER_CONTROL_BLOCK
 
 #define CONFIG_CMD_BOOTCTOL_AVB
+#define CONFIG_AVB2_KPUB_VENDOR 1
 
 /* support ext4*/
 #define CONFIG_CMD_EXT4 1
@@ -133,7 +134,6 @@
         "reboot_mode_android=""normal""\0"\
         "Irq_check_en=0\0"\
         "fs_type=""rootfstype=ramfs""\0"\
-        "aml_dt=sm1_s905x3_bananapim5\0"\
         "initargs="\
             "init=/init "\
             INITARGS_CONSOLE\
@@ -144,6 +144,13 @@
             "if itest ${upgrade_step} == 3; then "\
                 "run init_display; run storeargs; run update;"\
             "else fi;"\
+            "\0"\
+        "upgrade_adc_key="\
+            "saradc open 2; saradc getval; "\
+            "if saradc get_in_range 0x0 0x50; then "\
+                "echo update by adc key; "\
+                "run update; "\
+            "fi;"\
             "\0"\
         "storeargs="\
 		"get_bootloaderversion;" \
@@ -173,7 +180,7 @@
             "else if test ${reboot_mode} = cold_boot; then "\
                     "setenv reboot_mode_android ""normal"";"\
                     "run storeargs;"\
-            "else if test ${reboot_mode} = fastboot -o ${reboot_mode} = bootloader; then "\
+            "else if test ${reboot_mode} = fastboot; then "\
                 "setenv reboot_mode_android ""normal"";"\
                 "run storeargs;"\
                 "fastboot;"\
@@ -255,6 +262,7 @@
                 "bootm ${loadaddr};fi;"\
             "\0"\
         "recovery_from_flash="\
+            "run aml_dt_check;"\
             "get_valid_slot;"\
             "echo active_slot: ${active_slot};"\
             "if test ${active_slot} = normal; then "\
@@ -313,21 +321,34 @@
                 "else "\
                     "setenv bootargs ${bootargs} androidboot.oem.key1=ATV00100020;"\
                 "fi;"\
+                "if keyman read dtbo ${loadaddr} str; then "\
+                    "setenv bootargs ${bootargs} androidboot.dtbo_idx=${dtbo};"\
+                    "setenv androidboot.dtbo_idx ${dtbo};"\
+                "fi;"\
+            "fi;"\
+            "\0"\
+        "aml_dt_check="\
+            "if test -n ${aml_dt}; then "\
+                "echo using dt-id: ${aml_dt}; "\
+            "else "\
+                "setenv aml_dt sm1_ac213_4g; "\
             "fi;"\
             "\0"\
         "bcb_cmd="\
             "get_avb_mode;"\
             "get_valid_slot;"\
             "\0"\
-        "upgrade_key="\
-            "if gpio input GPIOAO_3; then "\
-                "echo detect upgrade key; run update;"\
-            "fi;"\
-            "\0"\
         "recovery_key="\
             "if gpio input GPIOAO_3; then "\
                 "echo detect recovery key; run recovery_from_flash;"\
             "fi;"\
+            "\0"\
+        "wifi_module_check="\
+            "if gpio input GPIOX_6; then "\
+                "echo M5: no wifi; keyman write dtbo str 0; "\
+            "else "\
+                "echo M5: has wifi; keyman write dtbo str 1; "\
+            "fi;fi;"\
             "\0"\
 	"irremote_update="\
 		"if irkey 2500000 0xe31cfb04 0xb748fb04; then "\
@@ -350,7 +371,9 @@
             "run bcb_cmd; "\
             "run factory_reset_poweroff_protect;"\
             "run upgrade_check;"\
+            "run upgrade_adc_key;"\
             "run init_display;"\
+            "run wifi_module_check;"\
             "run storeargs;"\
             "run recovery_key;" \
             "bcb uboot-command;"\
@@ -381,6 +404,7 @@
 #define CONFIG_DDR_FULL_TEST			0 //0:disable, 1:enable. ddr full test
 #define CONFIG_CMD_DDR_D2PLL			0 //0:disable, 1:enable. d2pll cmd
 #define CONFIG_CMD_DDR_TEST				0 //0:disable, 1:enable. ddrtest cmd
+#define CONFIG_CMD_DDR_TEST_G12			1 //0:disable, 1:enable. G12 ddrtest cmd
 #define CONFIG_DDR_LOW_POWER			0 //0:disable, 1:enable. ddr clk gate for lp
 #define CONFIG_DDR_ZQ_PD				0 //0:disable, 1:enable. ddr zq power down
 #define CONFIG_DDR_USE_EXT_VREF			0 //0:disable, 1:enable. ddr use external vref
@@ -685,13 +709,10 @@
 //unify build for generate encrypted bootloader "u-boot.bin.encrypt"
 #define CONFIG_AML_CRYPTO_UBOOT   1
 
-#define CONFIG_AML_SIGNED_UBOOT   0
-
 //unify build for generate encrypted kernel image
 //SRC : "board/amlogic/(board)/boot.img"
 //DST : "fip/boot.img.encrypt"
 //#define CONFIG_AML_CRYPTO_IMG       1
-#define CONFIG_SKIP_KERNEL_DTB_SECBOOT_CHECK
 
 #endif //CONFIG_AML_SECURE_UBOOT
 
@@ -710,8 +731,8 @@
 
 /* Choose One of Ethernet Type */
 #undef CONFIG_ETHERNET_NONE
-#define ETHERNET_INTERNAL_PHY
-#undef ETHERNET_EXTERNAL_PHY
+#undef ETHERNET_INTERNAL_PHY
+#define ETHERNET_EXTERNAL_PHY
 
 #define CONFIG_HIGH_TEMP_COOL 90
 #endif
